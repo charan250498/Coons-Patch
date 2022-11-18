@@ -20,7 +20,7 @@ def get_bezier_curve_points(P):
         curve_points.append([x, y, z])
     return curve_points
 
-def linear_interpolate(curve0, curve1):
+def linear_interpolate_ld(curve0, curve1):
     linear_interpolated_curve = []
     denominator = num_points
     for i in range(num_points):
@@ -29,6 +29,19 @@ def linear_interpolate(curve0, curve1):
             x = (1-(i/denominator)) * curve0[j][0] + (i/denominator) * curve1[j][0]
             y = (1-(i/denominator)) * curve0[j][1] + (i/denominator) * curve1[j][1]
             z = (1-(i/denominator)) * curve0[j][2] + (i/denominator) * curve1[j][2]
+            row.append([x, y, z])
+        linear_interpolated_curve.append(row)
+    return linear_interpolated_curve
+
+def linear_interpolate_lc(curve0, curve1):
+    linear_interpolated_curve = []
+    denominator = num_points
+    for i in range(num_points):
+        row = []
+        for j in range(num_points):
+            x = (1-(j/denominator)) * curve0[i][0] + (j/denominator) * curve1[i][0]
+            y = (1-(j/denominator)) * curve0[i][1] + (j/denominator) * curve1[i][1]
+            z = (1-(j/denominator)) * curve0[i][2] + (j/denominator) * curve1[i][2]
             row.append([x, y, z])
         linear_interpolated_curve.append(row)
     return linear_interpolated_curve
@@ -89,8 +102,8 @@ d0 = get_bezier_curve_points(d0)
 d1 = get_bezier_curve_points(d1)
 
 # Generate linear interpolated points from the curves
-lc = linear_interpolate(c0, c1)
-ld = linear_interpolate(d0, d1)
+lc = linear_interpolate_lc(c0, c1)
+ld = linear_interpolate_ld(d0, d1)
 
 # Generate bilinear interpolated curve from all 4 curves
 b = bilinear_interpolate(c0, c1, d0, d1)
@@ -106,4 +119,5 @@ obj = bpy.data.objects.new(name, mesh)
 scn = bpy.context.scene
 scn.collection.objects.link(obj)
 bpy.context.view_layer.objects.active = obj
+#mesh.from_pydata(combine_pts(ld), [], [])
 mesh.from_pydata(combine_pts(C), [], faces)
