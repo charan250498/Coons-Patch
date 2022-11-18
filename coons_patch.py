@@ -67,7 +67,7 @@ def combine_pts(pts):
 def get_faces(pts):
     faces = []
     for i in range(num_points + 1, num_points*num_points):
-        if i % 1000 == 0:
+        if i % num_points == 0:
             continue
         face = [i, i-1, i-num_points-1, i-num_points]
         faces.append(face)
@@ -106,4 +106,4 @@ obj = bpy.data.objects.new(name, mesh)
 scn = bpy.context.scene
 scn.collection.objects.link(obj)
 bpy.context.view_layer.objects.active = obj
-mesh.from_pydata(combine_pts(C), [], faces[:1000])
+mesh.from_pydata(combine_pts(C), [], faces)
